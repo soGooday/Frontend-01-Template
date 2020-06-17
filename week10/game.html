@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<style>
+
+    .list{
+        display: inline-block;
+        background-color: aquamarine;
+        width: 200px;
+        height: 200px;
+        line-height: 200px;
+        font-size: 30px;
+        vertical-align: bottom; vertical-align: bottom;
+        text-align: center;
+    }
+    div{
+        margin: 10px;
+    }
+
+</style>
+
+
+<body>
+
+<script>
+    let pattern = [
+        [0,0,0],
+        [0,0,0],
+        [0,0,0],
+    ]
+    let isLEFT = true;//先手的一方
+    function show(array){
+        let body = document.getElementsByTagName('body')[0];
+        let f = document.createDocumentFragment();
+        body.innerHTML = '';
+        for (let i=0;i<3;i++){
+            let divP =  document.createElement('div');
+            for (let j=0;j<3;j++){
+                let div = document.createElement('div');
+                div.className = 'list';
+                div.innerHTML =
+                    array[i][j] === 1 ?  "O" :
+                    array[i][j] === 2 ?  "x" :
+                    '';
+                    divP.appendChild(div);
+
+                div.addEventListener('click',()=>{
+                    choose(i,j,array,div)
+                })
+            }
+            f.appendChild(divP);
+        }
+        body.appendChild(f)
+    }
+    show(pattern)
+    function choose(i,j,array,div){
+        let num = array[i][j];
+        console.log(`${isLEFT===true ? '左边下棋': '右边下棋'}`)
+        // if(num === 0){
+            if(isLEFT){
+                array[i][j] = 1;
+            }else {
+                array[i][j] = 2;
+            }
+            isLEFT = !isLEFT;
+        // }
+        div.innerHTML =
+            array[i][j] === 1 ?  "O" :
+                array[i][j] === 2 ?  "x" :
+                    '';
+        // show(pattern)
+        console.log(check(array))
+        // control(array)
+        console.log(pattern)
+    }
+
+    function  control(array) {
+        if(check(array)){
+            setTimeout(()=>{
+                window.alert('一方胜利了')
+            },50)
+
+        }
+    }
+    
+    function check(array) {
+        // console.log('array:',array)
+
+        {//横着看是不是成功了
+            let status = -1;//假设当前的第一个对比参数是 -1
+            let choose = -2;
+            for(let i=0;i<3;i++){
+                status = array[i][0];//找到第一列的第一个状态是什么 使用这个进行如下的对比是不是三行都一样
+                if(status === 0) break;//如果是 0 说明这一行还没有成功
+                for(let j=0;j<3;j++){
+                    choose = array[i][j];
+                    if(choose === 0) break;//如果是 0 说明这一行还没有成功
+                    if(status === choose ){
+                        if(j === 2){
+                            return true
+                        }
+                    }
+                }
+            }
+            // return  false
+        }
+
+
+        {//竖着看是不是成功了
+            let status = -1;//假设当前的第一个对比参数是 -1
+            let choose = -2;
+            for(let i=0;i<3;i++){
+                status = array[0][i];//找到第一列的第一个状态是什么 使用这个进行如下的对比是不是三行都一样
+                // console.log('外：',status)
+                if(status === 0) break;//如果是 0 说明这一行还没有成功
+                for(let j=0;j<3;j++){
+                    choose = array[j][i];
+                    if(choose === 0) break;//如果是 0 说明这一行还没有成功
+                    // console.log('内：',choose,'i:',i,"j:",j)
+                    if(status === choose ){
+                        if(j === 2){
+                            return true
+                        }
+
+                    }
+                }
+            }
+            // return  false
+        }
+        //[0][0] == [1][1] == [2][2]
+        {//左边倾斜第一个 开始
+            let left = array[0][0];
+            let moddle = array[1][1];
+            let right = array[2][2];
+
+            if(moddle === 0) return  false
+
+            if(left == moddle){
+                if(moddle == right) return  true
+            }
+            // console.log(left,moddle,right)
+        }
+        //[0][0] == [1][1] == [2][2]
+        {
+            let left = array[0][2];
+            let moddle = array[1][1];
+            let right = array[2][0];
+
+            if(moddle === 0) return  false
+
+            if(left == moddle){
+                if(moddle == right) return  true
+            }
+            // console.log(left,moddle,right)
+        }
+        return  false
+    }
+
+
+</script>>
+
+</body>
+</html>
